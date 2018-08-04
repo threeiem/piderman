@@ -1,0 +1,15 @@
+#!/bin/bash
+
+temperatureF() {
+  echo $(echo "scale=2;((9/5) * $(temperatureC)) + 32" |bc)
+}
+
+temperatureC() {
+  if [ -f /opt/vc/bin/vcgencmd ]; then
+    tempRaw="$(/opt/vc/bin/vcgencmd measure_temp)"
+    tempC=$(echo "${tempRaw#*=}" | sed 's/'\''.*//g')
+    echo $tempC
+  fi
+}
+
+echo "$(temperatureF)$(printf '\xC2\xB0')F"
