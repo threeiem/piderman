@@ -1,5 +1,19 @@
 #!/bin/bash
+# piderman piderman bash shell piderman
 
+# System
+# ------------------------------------------------------------------------------
+piModel() {
+  echo "$(tr -d '\0' </proc/device-tree/model)"
+}
+
+piPrint() {
+  echo -n "Model: $(piModel)"
+}
+
+
+# CPU
+# ------------------------------------------------------------------------------
 cpuTemperatureC() {
   echo "scale=2; $(cat /sys/class/thermal/thermal_zone0/temp)/1000" | bc
 }
@@ -8,6 +22,13 @@ cpuTemperatureF() {
   echo "$(c2f $(cpuTemperatureC))"
 }
 
+cpuPrint() {
+  echo -n "CPU Temperature: $(cpuTemperatureF)$(degree)F"
+}
+
+
+# GPU
+# ------------------------------------------------------------------------------
 gpuTemperatureC() {
   if [ -f /opt/vc/bin/vcgencmd ]; then
     tempRaw="$(/opt/vc/bin/vcgencmd measure_temp)"
@@ -16,17 +37,25 @@ gpuTemperatureC() {
   fi
 }
 
-c2f(){
-  echo "scale=2;((9/5) * $1) + 32" |bc
-}
-
 gpuTemperatureF() {
   echo "$(c2f $(gpuTemperatureC))" 
+}
+
+gpuPrint() {
+  echo -n "GPU Temperature:$(gpuTemperatureF)$(degree)F"
+}
+
+
+# Helper Functions
+# ------------------------------------------------------------------------------
+c2f(){
+  echo "scale=2;((9/5) * $1) + 32" |bc
 }
 
 degree() {
   printf '\xC2\xB0'
 }
 
-echo "GPU:$(gpuTemperatureF)$(degree)F"
-echo "CPU:$(cpuTemperatureF)$(degree)F"
+echo $(piPrint)
+echo $(cpuPrint)
+echo $(gpuPrint)
