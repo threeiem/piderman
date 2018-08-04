@@ -5,7 +5,7 @@ cpuTemperatureC() {
 }
 
 cpuTemperatureF() {
-	echo "$(c2f $(cpuTemperatureC))"
+  echo "$(c2f $(cpuTemperatureC))"
 }
 
 gpuTemperatureC() {
