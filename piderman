@@ -42,7 +42,7 @@ gpuTemperatureF() {
 }
 
 gpuPrint() {
-  echo -n "GPU Temperature:$(gpuTemperatureF)$(degree)F"
+  echo -n "GPU Temperature: $(gpuTemperatureF)$(degree)F"
 }
 
 
