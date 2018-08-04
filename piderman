@@ -1,10 +1,14 @@
 #!/bin/bash
 
-temperatureF() {
-  echo $(echo "scale=2;((9/5) * $(temperatureC)) + 32" |bc)
+cpuTemperatureC() {
+  echo "scale=2; $(cat /sys/class/thermal/thermal_zone0/temp)/1000" | bc
 }
 
-temperatureC() {
+cpuTemperatureF() {
+	echo "$(c2f $(cpuTemperatureC))"
+}
+
+gpuTemperatureC() {
   if [ -f /opt/vc/bin/vcgencmd ]; then
     tempRaw="$(/opt/vc/bin/vcgencmd measure_temp)"
     tempC=$(echo "${tempRaw#*=}" | sed 's/'\''.*//g')
@@ -12,4 +16,17 @@ temperatureC() {
   fi
 }
 
-echo "$(temperatureF)$(printf '\xC2\xB0')F"
+c2f(){
+  echo "scale=2;((9/5) * $1) + 32" |bc
+}
+
+gpuTemperatureF() {
+  echo "$(c2f $(gpuTemperatureC))" 
+}
+
+degree() {
+  printf '\xC2\xB0'
+}
+
+echo "GPU:$(gpuTemperatureF)$(degree)F"
+echo "CPU:$(cpuTemperatureF)$(degree)F"
